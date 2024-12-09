@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_ROOT = 'http://localhost:3000'
+const API_ROOT = 'https://lecole-fast-track-24.onrender.com'
 
 // Get all products
 export const getAllProducts = async () => {
