@@ -18,10 +18,6 @@ export default defineConfig(({ command, mode }) => ({
     }
   },
   plugins: [
-    react({
-      jsxRuntime: 'automatic',
-      jsxImportSource: 'react'
-    }),
     reactRouter(),
     tsconfigPaths()
   ],
