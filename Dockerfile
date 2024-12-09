@@ -6,7 +6,7 @@ RUN yarn install
 FROM node:20-alpine AS production-dependencies-env
 COPY ./package.json yarn.lock /app/
 WORKDIR /app
-RUN yarn install --omit=dev
+RUN yarn install
 
 FROM node:20-alpine AS build-env
 COPY . /app/
