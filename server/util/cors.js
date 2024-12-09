@@ -1,4 +1,4 @@
-import { WHITELIST_DOMAINS } from './constant'
+import { WHITELIST_DOMAINS } from './constant.js'
 
 export const corsOptions = {
   origin: function (origin, callback) {
