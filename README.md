@@ -1,4 +1,5 @@
 # Welcome to LECOLE Fast Track 24
+# Project currently Deployed on: https://seahorse-app-z5vbq.ondigitalocean.app/track-one
 
 ## Features
 
