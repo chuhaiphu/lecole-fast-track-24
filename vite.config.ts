@@ -1,11 +1,11 @@
 import path from "path";
+import { defineConfig } from "vite";
 import { reactRouter } from "@react-router/dev/vite";
 import autoprefixer from "autoprefixer";
 import tailwindcss from "tailwindcss";
-import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
-export default defineConfig({
+export default defineConfig(({ command, mode }) => ({
   server: {
     proxy: {
       '/api': 'http://localhost:3000'
@@ -16,10 +16,16 @@ export default defineConfig({
       plugins: [tailwindcss, autoprefixer]
     }
   },
-  plugins: [reactRouter(), tsconfigPaths()],
+  plugins: [
+    reactRouter(), 
+    tsconfigPaths()
+  ],
   resolve: {
     alias: {
       "~": path.resolve(__dirname, "./app")
     }
+  },
+  build: {
+    sourcemap: true
   }
-});
+}));
