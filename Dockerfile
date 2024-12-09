@@ -25,4 +25,4 @@ RUN mkdir -p /app/database
 WORKDIR /app
 
 VOLUME ["/app/database"]
-CMD ["yarn", "start"]
+CMD ["yarn", "dev"]
