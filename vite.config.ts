@@ -8,8 +8,10 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig(({ command, mode }) => ({
   server: {
+    host: "0.0.0.0",
+    port: 5173,
     proxy: {
-      '/api': 'http://localhost:3000'
+      '/api': 'http://0.0.0.0:3000'
     }
   },
   css: {
