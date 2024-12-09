@@ -4,13 +4,18 @@ import { reactRouter } from "@react-router/dev/vite";
 import autoprefixer from "autoprefixer";
 import tailwindcss from "tailwindcss";
 import tsconfigPaths from "vite-tsconfig-paths";
+import react from '@vitejs/plugin-react'
 
 export default defineConfig(({ command, mode }) => ({
   server: {
     host: "0.0.0.0",
     port: 5173,
     proxy: {
-      '/api': 'http://0.0.0.0:3000'
+      '/api': {
+        target: process.env.VITE_API_URL || 'http://0.0.0.0:3000',
+        changeOrigin: true,
+        secure: false,
+      }
     }
   },
   css: {
@@ -19,15 +24,12 @@ export default defineConfig(({ command, mode }) => ({
     }
   },
   plugins: [
-    tsconfigPaths(),
-    reactRouter()
+    reactRouter(),
+    tsconfigPaths()
   ],
   resolve: {
     alias: {
       "~": path.resolve(__dirname, "./app")
     }
-  },
-  optimizeDeps: {
-    include: ['react', 'react-dom']
   }
 }));
