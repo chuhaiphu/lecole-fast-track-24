@@ -11,7 +11,11 @@ export default defineConfig(({ command, mode }) => ({
     host: "0.0.0.0",
     port: 5173,
     proxy: {
-      '/api': 'http://0.0.0.0:3000'
+      '/api': {
+        target: process.env.VITE_API_URL || 'http://0.0.0.0:3000',
+        changeOrigin: true,
+        secure: false,
+      }
     }
   },
   css: {
@@ -21,7 +25,8 @@ export default defineConfig(({ command, mode }) => ({
   },
   plugins: [
     reactRouter(),
-    tsconfigPaths()
+    tsconfigPaths(),
+    react()
   ],
   resolve: {
     alias: {

@@ -31,5 +31,11 @@ COPY . /app
 WORKDIR /app
 RUN yarn install
 RUN mkdir -p /app/database
-CMD ["yarn", "start"]
-EXPOSE 5173
+
+# Add environment variables with defaults
+ENV PORT=8080
+ENV VITE_API_URL=http://0.0.0.0:3000
+
+CMD ["sh", "-c", "yarn start"]
+EXPOSE 8080
+EXPOSE 3000
