@@ -1,5 +1,5 @@
 import ProductService from '../service/productService.js';
-import { responseData } from '../config/response.js';
+import { responseData } from '../util/response.js';
 
 class ProductController {
   async getAllProducts(req, res) {
