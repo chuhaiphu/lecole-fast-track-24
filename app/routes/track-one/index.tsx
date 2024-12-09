@@ -4,6 +4,7 @@ import FooterComponent from "~/components/ui/footer";
 import { getAllProducts } from "~/apis";
 import { useEffect, useState, useMemo } from "react";
 import ProductDetails from "~/routes/track-one/ProductDetails";
+import AddProductForm from '~/routes/track-one/AddProductForm';
 
 export function meta({ }: Route.MetaArgs) {
   return [{ title: "Track One" }];
@@ -20,6 +21,7 @@ interface Product {
 
 export default function TrackOne() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [showAddForm, setShowAddForm] = useState(false);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -33,26 +35,47 @@ export default function TrackOne() {
 
     fetchProducts();
   }, []);
-  // useMemo caches the sorted products array to prevent unnecessary re-sorting on every render
-  // This optimization only recalculates when the products array changes
-  // Particularly useful when dealing with expensive sorting operations or large datasets
+
   const sortedProducts = useMemo(() => {
     return [...products].sort((a, b) => a.name.localeCompare(b.name));
   }, [products]);
+
+  const refreshProducts = async () => {
+    try {
+      const response = await getAllProducts();
+      setProducts(response.data);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
 
   return (
     <div>
       <HeaderComponent />
       <div className="bg-white">
         <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-          <h2 className="text-2xl font-bold tracking-tight text-gray-900">Products</h2>
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl font-bold tracking-tight text-gray-900">Products</h2>
+            <button
+              onClick={() => setShowAddForm(true)}
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Add Product
+            </button>
+          </div>
           <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
             {sortedProducts.map((product) => (
-              <ProductDetails key={product.id} product={product} />
+              <ProductDetails key={product.id} product={product} onSuccess={refreshProducts} />
             ))}
           </div>
         </div>
       </div>
+      {showAddForm && (
+        <AddProductForm
+          onClose={() => setShowAddForm(false)}
+          onSuccess={refreshProducts}
+        />
+      )}
       <FooterComponent />
     </div>
   );

@@ -76,6 +76,78 @@ class ProductService {
       console.error("Error initializing database:", error);
     }
   }
+
+  async addProduct(product) {
+    return new Promise((resolve, reject) => {
+      const { name, description, price, stock, image_url } = product;
+      const query = `INSERT INTO products (name, description, price, stock, image_url) 
+                    VALUES (?, ?, ?, ?, ?)`;
+      
+      db.run(query, [name, description, price, stock, image_url], function(err) {
+        if (err) {
+          reject(err);
+          return;
+        }
+        // Return the newly created product with its ID
+        resolve({
+          id: this.lastID,
+          name,
+          description,
+          price,
+          stock,
+          image_url
+        });
+      });
+    });
+  }
+  
+  async updateProduct(id, product) {
+    return new Promise((resolve, reject) => {
+      const { name, description, price, stock, image_url } = product;
+      const query = `UPDATE products 
+                    SET name = ?, description = ?, price = ?, stock = ?, image_url = ?
+                    WHERE id = ?`;
+      
+      db.run(query, [name, description, price, stock, image_url, id], function(err) {
+        if (err) {
+          reject(err);
+          return;
+        }
+        if (this.changes === 0) {
+          reject(new Error('Product not found'));
+          return;
+        }
+        // Return the updated product
+        resolve({
+          id,
+          name,
+          description,
+          price,
+          stock,
+          image_url
+        });
+      });
+    });
+  }
+
+  async deleteProduct(id) {
+    return new Promise((resolve, reject) => {
+      const query = "DELETE FROM products WHERE id = ?";
+      
+      db.run(query, [id], function(err) {
+        if (err) {
+          reject(err);
+          return;
+        }
+        if (this.changes === 0) {
+          reject(new Error('Product not found'));
+          return;
+        }
+        resolve();
+      });
+    });
+  }
+  
 }
 
 export default new ProductService();
