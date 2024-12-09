@@ -10,6 +10,8 @@
     "typecheck": "react-router typegen && tsc"
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.0",
+    "@heroicons/react": "^2.2.0",
     "@radix-ui/react-slot": "^1.1.0",
     "@react-router/node": "^7.0.2",
     "@react-router/serve": "^7.0.2",
