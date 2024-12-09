@@ -41,7 +41,7 @@ const ProductDetails = memo(({ product, onSuccess }: { product: Product; onSucce
   };
 
   return (
-    <div className="relative">
+    <div className="relative z-0">
       <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7 relative h-[300px] group">
         <div className="absolute top-2 right-2">
           <span className="inline-flex items-center rounded-full bg-white/90 px-2 py-1 text-xs font-medium text-gray-900 ring-1 ring-inset ring-gray-200/20">
