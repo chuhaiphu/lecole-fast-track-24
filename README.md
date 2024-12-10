@@ -1,5 +1,4 @@
 # Welcome to LECOLE Fast Track 24
-# Project currently Deployed on: https://seahorse-app-z5vbq.ondigitalocean.app/track-one
 
 ## Features
 
@@ -9,10 +8,8 @@
 - 🔄 Data loading and mutations
 - 🔒 TypeScript by default
 - 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
 
 ## Getting Started
-
 ### Installation
 
 Install the dependencies:
