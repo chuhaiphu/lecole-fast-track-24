@@ -19,6 +19,9 @@ export default function setupSocketHandlers(io) {
           
           io.emit("secret-phrase-updated", { userId, newSecretPhrase });
           socket.emit("success", { message: "Secret phrase updated successfully" });
+          socket.broadcast.emit("user-updated-secret-phrase", {
+            message: `User ${userId} has updated his/her secret phrase`,
+          });
         } else {
           socket.emit("error", { error: "You do not have permission to update this user's secret phrase" });
         }

@@ -4,18 +4,21 @@ import { Server } from "socket.io";
 import setupSocketHandlers from './socket/socketHandler.js';
 import userRouter from "./route/userRoute.js";
 import cors from 'cors'
+import { corsOptions } from "./util/cors.js";
 
 const app = express();
 const port = 3000;
 
 const server = http.createServer(app);
-const io = new Server(server);
+app.use(cors(corsOptions));
+const io = new Server(server, {
+  cors: {
+    origin: "*"
+  }
+});
 
 app.use(express.json());
-app.use(cors());
-
 app.use('/api/users', userRouter);
-
 setupSocketHandlers(io);
 
 server.listen(port, () => {
