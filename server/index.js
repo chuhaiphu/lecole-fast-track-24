@@ -4,7 +4,6 @@ import { Server } from "socket.io";
 import setupSocketHandlers from './socket/socketHandler.js';
 import userRouter from "./route/userRoute.js";
 import cors from 'cors'
-import { corsOptions } from "./util/cors.js";
 
 const app = express();
 const port = 3000;

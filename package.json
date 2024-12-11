@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "react-router build",
+    "build": "mkdir -p database && react-router build",
     "dev": "react-router dev",
     "dev:server": "node server/index.js",
     "start": "react-router-serve ./build/server/index.js",
