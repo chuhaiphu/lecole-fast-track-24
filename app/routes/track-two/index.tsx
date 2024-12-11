@@ -4,6 +4,10 @@ import type { Route } from "../track-one/+types";
 import FooterComponent from "~/components/footer";
 import UserTable from "../../components/list/user-list";
 import { getAllUsersAPI } from "~/api/user-api";
+import { io } from "socket.io-client";
+import { toast, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
+
 
 export function meta({ }: Route.MetaArgs) {
   return [{ title: "Track Two" }];
@@ -11,8 +15,35 @@ export function meta({ }: Route.MetaArgs) {
 
 export default function TrackTwo() {
   const [users, setUsers] = useState([]);
+  const [socket, setSocket] = useState(null);
     
-  // Cache function definition between re-renders
+  useEffect(() => {
+    const newSocket = io('http://localhost:3000');
+    setSocket(newSocket as any);
+
+    // Listen for socket events
+    newSocket.on('success', (data) => {
+      toast.success(data.message);
+    });
+
+    newSocket.on('error', (data) => {
+      toast.error(data.error);
+    });
+
+    newSocket.on('user-updated-secret-phrase', (data) => {
+      console.log('Received secret phrase update:', data);
+      toast.info(data.message);
+    });
+
+    newSocket.on('secret-phrase-updated', () => {
+      fetchUsers();
+    });
+    
+    return () => {
+      newSocket.close();
+    };
+  }, []);
+
   const fetchUsers = useCallback(async () => {
     try {
       const response = await getAllUsersAPI();
@@ -26,16 +57,23 @@ export default function TrackTwo() {
     fetchUsers();
   }, [fetchUsers]);
     
-  // Memoize UserTable to prevent unnecessary re-renders
   const userTable = useMemo(() => (
-    <UserTable users={users} />
-  ), [users]);
+    socket ? <UserTable users={users} socket={socket} /> : null
+  ), [users, socket]);
 
   return (
-    <>
+<>
       <HeaderComponent />
       {userTable}
       <FooterComponent />
+      <ToastContainer 
+        position="bottom-right"
+        theme="colored"
+        autoClose={2000}
+        hideProgressBar={true}
+        newestOnTop
+        closeOnClick
+      />
     </>
   );
 }
