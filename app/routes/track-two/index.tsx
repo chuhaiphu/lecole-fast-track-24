@@ -18,12 +18,7 @@ export default function TrackTwo() {
   const [socket, setSocket] = useState(null);
     
   useEffect(() => {
-    const newSocket = io({
-      path: "/socket.io/",
-      transports: ["websocket"],
-      secure: true,
-      rejectUnauthorized: false
-    });
+    const newSocket = io('http://0.0.0.0:3000');
     
     setSocket(newSocket as any);
 

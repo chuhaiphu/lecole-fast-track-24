@@ -11,16 +11,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'http://0.0.0.0:3000',
-        changeOrigin: true,
-        secure: false,
-        ws: true
-      },
-      '/socket.io': {
-        target: 'http://0.0.0.0:3000',
-        changeOrigin: true,
-        secure: false,
-        ws: true
+        target: 'http://0.0.0.0:3000'
       }
     }
   },
