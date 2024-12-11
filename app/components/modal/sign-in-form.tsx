@@ -1,4 +1,8 @@
 import { Dialog } from '@headlessui/react'
+import { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { loginUserAPI } from '~/api/user-api'
+import { setUser } from '~/redux/user/userSlice'
 
 interface SignInModalProps {
   isOpen: boolean
@@ -6,6 +10,24 @@ interface SignInModalProps {
 }
 
 export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
+  const dispatch = useDispatch()
+  const [formData, setFormData] = useState({
+    username: '',
+    secret_phrase: ''
+  })
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    try {
+      const response = await loginUserAPI(formData)
+      dispatch(setUser(response.data))
+      localStorage.setItem('user', JSON.stringify(response.data))
+      onClose()
+    } catch (error) {
+      console.error('Login failed:', error)
+    }
+  }
+
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-50">
       <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" aria-hidden="true" />
@@ -19,7 +41,7 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
             </div>
 
             <div className="mt-8">
-              <form className="space-y-6">
+              <form className="space-y-6" onSubmit={handleSubmit}>
                 <div>
                   <label htmlFor="username" className="block text-sm font-medium leading-6 text-gray-900">
                     Username
@@ -30,21 +52,25 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
                       name="username"
                       type="text"
                       required
+                      value={formData.username}
+                      onChange={(e) => setFormData(prev => ({ ...prev, username: e.target.value }))}
                       className="block w-full rounded-lg border-0 py-2 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
+                  <label htmlFor="secret_phrase" className="block text-sm font-medium leading-6 text-gray-900">
                     Secret-Phrase
                   </label>
                   <div className="mt-2">
                     <input
-                      id="password"
-                      name="password"
+                      id="secret_phrase"
+                      name="secret_phrase"
                       type="password"
                       required
+                      value={formData.secret_phrase}
+                      onChange={(e) => setFormData(prev => ({ ...prev, secret_phrase: e.target.value }))}
                       className="block w-full rounded-lg border-0 py-2 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
                     />
                   </div>
