@@ -18,7 +18,7 @@ export default function TrackTwo() {
   const [socket, setSocket] = useState(null);
     
   useEffect(() => {
-    const newSocket = io('http://0.0.0.0:3000');
+    const newSocket = io('http://23.23.66.44/:3000');
     
     setSocket(newSocket as any);
 
