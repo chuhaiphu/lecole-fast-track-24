@@ -1,5 +1,5 @@
 import express from "express";
-import http from "http";
+import https from "http";
 import { Server } from "socket.io";
 import setupSocketHandlers from './socket/socketHandler.js';
 import userRouter from "./route/userRoute.js";
@@ -8,7 +8,8 @@ import cors from 'cors'
 const app = express();
 const port = 3000;
 
-const server = http.createServer(app);
+const server = https.createServer(app);
+
 app.use(cors());
 const io = new Server(server, {
   cors: {
