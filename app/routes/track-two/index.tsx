@@ -18,10 +18,13 @@ export default function TrackTwo() {
   const [socket, setSocket] = useState(null);
     
   useEffect(() => {
-      const newSocket = io(import.meta.env.VITE_SOCKET_URL, {
-        withCredentials: true,
-        transports: ['websocket', 'polling']
-      });
+    const newSocket = io({
+      path: "/socket.io/",
+      transports: ["websocket"],
+      secure: true,
+      rejectUnauthorized: false
+    });
+    
     setSocket(newSocket as any);
 
     // Listen for socket events

@@ -10,7 +10,18 @@ export default defineConfig({
     host: "0.0.0.0",
     port: 5173,
     proxy: {
-      '/api':  'http://0.0.0.0:3000',
+      '/api': {
+        target: 'http://0.0.0.0:3000',
+        changeOrigin: true,
+        secure: false,
+        ws: true
+      },
+      '/socket.io': {
+        target: 'http://0.0.0.0:3000',
+        changeOrigin: true,
+        secure: false,
+        ws: true
+      }
     }
   },
   css: {
