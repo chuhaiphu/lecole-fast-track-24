@@ -7,11 +7,11 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
   server: {
-    host: "0.0.0.0",
+    host: "23.23.66.44",
     port: 5173,
     proxy: {
       '/api': {
-        target: 'http://0.0.0.0:3000',
+        target: 'http://23.23.66.44:3000',
         changeOrigin: true,
         secure: false,
       }
