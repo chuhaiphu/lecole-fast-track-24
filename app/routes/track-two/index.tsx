@@ -18,7 +18,7 @@ export default function TrackTwo() {
   const [socket, setSocket] = useState(null);
     
   useEffect(() => {
-    const newSocket = io('http://localhost:3000');
+    const newSocket = io('http://18.212.253.50:3000');
     setSocket(newSocket as any);
 
     // Listen for socket events

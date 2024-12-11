@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_ROOT = 'http://localhost:3000/api'
+const API_ROOT = 'http://18.212.253.50:3000/api'
 
 export const registerUserAPI = async (userData: { username: string; roles: string; secret_phrase: string }) => {
   const response = await axios.post(`${API_ROOT}/users/register`, userData)
