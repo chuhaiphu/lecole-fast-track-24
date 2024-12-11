@@ -18,7 +18,7 @@ class UserService {
         CREATE TABLE IF NOT EXISTS users (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           username TEXT NOT NULL UNIQUE,
-          image_url TEXT NOT NULL
+          image_url TEXT NOT NULL,
           roles TEXT NOT NULL,
           secret_phrase TEXT NOT NULL
         )
@@ -37,20 +37,29 @@ class UserService {
 
     this.db.get("SELECT COUNT(*) AS count FROM users", (err, row) => {
       if (row?.count === 0) {
-        const stmt = this.db.prepare("INSERT INTO users (username, roles, secret_phrase) VALUES (?, ?, ?)");
+        const stmt = this.db.prepare("INSERT INTO users (username, image_url, roles, secret_phrase) VALUES (?, ?, ?, ?)");
         for (const user of seedUserData) {
-          stmt.run(user.username, user.roles, user.secret_phrase);
-        }
+          stmt.run(user.username, user.image_url, user.roles, user.secret_phrase);
+        }        
         stmt.finalize();
         console.log("Database seeded with users data");
       }
     });
   }
 
+  async getAllUsers() {
+    return new Promise((resolve, reject) => {
+      this.db.all("SELECT * FROM users", (err, users) => {
+        if (err) reject(err);
+        resolve(users);
+      });
+    });
+  }
+
   async createUser(username, roles, secret_phrase) {
     return new Promise((resolve, reject) => {
       this.db.run(
-        "INSERT INTO users (username, roles, secret_phrase) VALUES (?, ?, ?)",
+        "INSERT INTO users (username, image_url, roles, secret_phrase) VALUES (?, ?, ?)",
         [username, roles, secret_phrase],
         (err) => {
           if (err) reject(err);
@@ -59,6 +68,20 @@ class UserService {
       );
     });
   }
+
+async loginUser(username, secret_phrase) {
+  return new Promise((resolve, reject) => {
+    this.db.get(
+      "SELECT * FROM users WHERE username = ? AND secret_phrase = ?",
+      [username, secret_phrase],
+      (err, user) => {
+        if (err) reject(err);
+        resolve(user);
+      }
+    );
+  });
+}
+
 
   async getUserByUsername(username) {
     return new Promise((resolve, reject) => {

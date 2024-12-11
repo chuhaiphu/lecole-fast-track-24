@@ -1,16 +1,15 @@
-const people = [
-  {
-    name: 'Lindsay Walton',
-    title: 'Front-end Developer',
-    department: 'Optimization',
-    email: 'lindsay.walton@example.com',
-    role: 'Member',
-    image:
-      'https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-  },
-]
+interface User {
+  username: string;
+  image_url: string;
+  roles: string;
+  secret_phrase: string;
+}
 
-export default function UserTable() {
+interface UserTableProps {
+  users: User[];
+}
+
+export default function UserTable({ users }: UserTableProps) {
   return (
     <div className="mx-auto max-w-7xl">
       <div className="px-4 sm:px-6 lg:px-8">
@@ -18,16 +17,8 @@ export default function UserTable() {
           <div className="sm:flex-auto">
             <h1 className="text-base font-semibold text-gray-900">Users</h1>
             <p className="mt-2 text-sm text-gray-700">
-              A list of all the users in your account including their name, title, email and role.
+              A list of all the users including their name, image, secret-phrase, and role.
             </p>
-          </div>
-          <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-            <button
-              type="button"
-              className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-              Add user
-            </button>
           </div>
         </div>
         <div className="mt-8 flow-root">
@@ -37,10 +28,10 @@ export default function UserTable() {
                 <thead>
                   <tr>
                     <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
-                      Name
+                      Username
                     </th>
                     <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                      Title
+                      Secret Phrase
                     </th>
                     <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                       Role
@@ -51,30 +42,29 @@ export default function UserTable() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
-                  {people.map((person) => (
-                    <tr key={person.email}>
+                  {users.map((user) => (
+                    <tr key={user.username}>
                       <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
                         <div className="flex items-center">
                           <div className="size-11 shrink-0">
-                            <img alt="" src={person.image} className="size-11 rounded-full" />
+                            <img alt="" src={user.image_url} className="size-11 rounded-full" />
                           </div>
                           <div className="ml-4">
-                            <div className="font-medium text-gray-900">{person.name}</div>
-                            <div className="mt-1 text-gray-500">{person.email}</div>
+                            <div className="font-medium text-gray-900">{user.username}</div>
                           </div>
                         </div>
                       </td>
                       <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                        <div className="text-gray-900">{person.title}</div>
+                        <div className="text-gray-900">{user.secret_phrase}</div>
                       </td>
                       <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
                         <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
-                          {person.role}
+                          {user.roles}
                         </span>
                       </td>
                       <td className="relative whitespace-nowrap py-5 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                         <a href="#" className="text-indigo-600 hover:text-indigo-900">
-                          Edit<span className="sr-only">, {person.name}</span>
+                          Edit<span className="sr-only">, {user.username}</span>
                         </a>
                       </td>
                     </tr>

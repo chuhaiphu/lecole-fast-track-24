@@ -1,8 +1,9 @@
 import express from "express";
 import http from "http";
 import { Server } from "socket.io";
-import userRoutes from './routes/userRoutes.js';
 import setupSocketHandlers from './socket/socketHandler.js';
+import userRouter from "./route/userRoute.js";
+import cors from 'cors'
 
 const app = express();
 const port = 3000;
@@ -13,7 +14,7 @@ const io = new Server(server);
 app.use(express.json());
 app.use(cors());
 
-app.use('/api', userRoutes);
+app.use('/api/users', userRouter);
 
 setupSocketHandlers(io);
 

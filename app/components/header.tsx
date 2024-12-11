@@ -1,15 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-import { Dialog, DialogPanel } from '@headlessui/react'
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import SignInModal from './modal/sign-in-form'
 
 export default function HeaderComponent() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [showSignIn, setShowSignIn] = useState(false)
 
   return (
     <header className="bg-white">
-      <nav aria-label="Global" className="mx-auto flex max-w-7xl justify-center p-6 lg:px-8">
+      <nav aria-label="Global" className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
         <a href="#" className="-m-1.5 p-1.5">
           <img
             alt=""
@@ -17,7 +16,15 @@ export default function HeaderComponent() {
             className="h-8 w-auto"
           />
         </a>
+        <button
+          onClick={() => setShowSignIn(true)}
+          className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-colors"
+        >
+          Sign in
+        </button>
       </nav>
+
+      <SignInModal isOpen={showSignIn} onClose={() => setShowSignIn(false)} />
     </header>
   )
 }
