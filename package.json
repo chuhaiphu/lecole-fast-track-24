@@ -3,10 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "mkdir -p database && react-router build",
+    "build": "react-router build",
     "dev": "react-router dev",
     "dev:server": "node server/index.js",
-    "start": "react-router-serve ./build/server/index.js",
+    "start": "concurrently \"yarn dev:server\" \"yarn dev\"",
     "typecheck": "react-router typegen && tsc"
   },
   "dependencies": {
@@ -19,6 +19,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cors": "^2.8.5",
+    "concurrently": "^9.1.0",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "isbot": "^5.1.17",
