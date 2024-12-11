@@ -25,6 +25,6 @@ app.use(express.json());
 app.use('/api/users', userRouter);
 setupSocketHandlers(io);
 
-app.listen(port, "0.0.0.0", () => {
-  console.log(`Server running at http://0.0.0.0:${port}`);
+app.listen(port, "23.23.66.44", () => {
+  console.log(`Server running at http://23.23.66.44:${port}`);
 });
