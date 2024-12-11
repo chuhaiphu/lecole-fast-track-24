@@ -1,6 +1,7 @@
+import HeaderComponent from "~/components/header";
 import type { Route } from "../track-one/+types";
-
-import { Button } from "~/components/ui/button";
+import FooterComponent from "~/components/footer";
+import UserTable from "./user-manager-page/user-table";
 
 export function meta({}: Route.MetaArgs) {
   return [{ title: "Track Two" }];
@@ -8,8 +9,10 @@ export function meta({}: Route.MetaArgs) {
 
 export default function TrackTwo() {
   return (
-    <div className="flex items-center justify-center h-screen">
-      <Button>Click me</Button>
-    </div>
+    <>
+      <HeaderComponent />
+      <UserTable />
+      <FooterComponent />
+    </>
   );
 }
