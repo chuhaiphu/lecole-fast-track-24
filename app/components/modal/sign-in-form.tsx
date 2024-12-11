@@ -1,6 +1,7 @@
 import { Dialog } from '@headlessui/react'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
+import { toast } from 'react-toastify'
 import { loginUserAPI } from '~/api/user-api'
 import { setUser } from '~/redux/user/userSlice'
 
@@ -23,8 +24,26 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
       dispatch(setUser(response.data))
       localStorage.setItem('user', JSON.stringify(response.data))
       onClose()
-    } catch (error) {
-      console.error('Login failed:', error)
+    } catch (error: any) {
+      if (error.response?.status === 401) {
+        toast.error('Invalid username or secret phrase', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true
+        })
+      } else {
+        toast.error('Login failed. Please try again later.', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true
+        })
+      }
     }
   }
 
