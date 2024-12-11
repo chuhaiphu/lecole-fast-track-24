@@ -10,7 +10,7 @@ const app = express();
 const port = 3000;
 
 const server = http.createServer(app);
-app.use(cors(corsOptions));
+app.use(cors());
 const io = new Server(server, {
   cors: {
     origin: "*"
