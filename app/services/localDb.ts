@@ -40,6 +40,7 @@ export class LocalDbService {
   }
 
   addTodo(title: string) {
+    let newId: number;
     this.db.exec({
       sql: "INSERT INTO todos (title, synced) VALUES (?, 0)",
       bind: [title]

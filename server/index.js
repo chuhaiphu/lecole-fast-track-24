@@ -124,7 +124,6 @@ app.put("/api/todos/:id", (req, res) => {
   );
 });
 
-// Sync endpoint to handle multiple todos
 app.post("/api/todos/sync", (req, res) => {
   const { todos } = req.body;
   
@@ -135,22 +134,24 @@ app.post("/api/todos/sync", (req, res) => {
   db.serialize(() => {
     try {
       db.run("BEGIN TRANSACTION");
-
       // Process each todo from the client
       todos.forEach(todo => {
-        if (todo.id) {
-          // Update existing todo
-          db.run(
-            "UPDATE todos SET status = ? WHERE id = ?",
-            [todo.status, todo.id]
-          );
-        } else {
-          // Insert new todo
-          db.run(
-            "INSERT INTO todos (title, status) VALUES (?, ?)",
-            [todo.title, todo.status]
-          );
-        }
+        // For new todos, the server should check if this todo exists
+        db.get("SELECT id FROM todos WHERE id = ?", [todo.id], (err, row) => {
+          if (!row) {
+            // This is a new todo, insert it
+            db.run(
+              "INSERT INTO todos (title, status) VALUES (?, ?)",
+              [todo.title, todo.status]
+            );
+          } else {
+            // Update existing todo
+            db.run(
+              "UPDATE todos SET status = ? WHERE id = ?",
+              [todo.status, todo.id]
+            );
+          }
+        });
       });
 
       db.run("COMMIT", [], (err) => {
@@ -158,7 +159,6 @@ app.post("/api/todos/sync", (req, res) => {
           res.status(500).json({ error: err.message });
           return;
         }
-
         // Return all todos after sync
         db.all("SELECT * FROM todos ORDER BY created_at DESC", [], (err, rows) => {
           if (err) {
@@ -175,6 +175,7 @@ app.post("/api/todos/sync", (req, res) => {
     }
   });
 });
+
 
 // Delete todo
 app.delete("/api/todos/:id", (req, res) => {

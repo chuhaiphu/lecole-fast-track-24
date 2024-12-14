@@ -39,17 +39,6 @@ export default function TrackThree() {
     setTodos(localDbService.getTodos());
   };
 
-  const addTodo = () => {
-    if (!newTodoTitle.trim()) return;
-    try {
-      localDbService.addTodo(newTodoTitle);
-      setNewTodoTitle("");
-      loadTodos();
-    } catch (err: any) {
-      setError("Failed to add todo");
-    }
-  };
-
   const updateTodoStatus = (todoId: number, newStatus: Todo["status"]) => {
     try {
       localDbService.updateTodoStatus(todoId, newStatus);
@@ -62,6 +51,8 @@ export default function TrackThree() {
   const syncWithBackend = async () => {
     try {
       const unsyncedTodos = localDbService.getUnsyncedTodos();
+      console.log("Unsynced todos:", unsyncedTodos);
+      
       const response = await fetch("http://localhost:3000/api/todos/sync", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -70,6 +61,7 @@ export default function TrackThree() {
 
       if (!response.ok) throw new Error("Sync failed");
       const serverTodos = await response.json();
+      console.log("Server response:", serverTodos);
       
       localDbService.syncTodos(serverTodos);
       loadTodos();
@@ -77,7 +69,6 @@ export default function TrackThree() {
       setError("Failed to sync with backend: " + err.message);
     }
   };
-
   useEffect(() => {
     const interval = setInterval(syncWithBackend, 15000);
     return () => clearInterval(interval);
