@@ -1,10 +1,10 @@
 import express from "express";
-import sqlite3 from "sqlite3";
 import http from "http";
 import { Server } from "socket.io";
 import { TodoService } from "./services/todoService.js";
 import { TodoController } from "./controllers/todoController.js";
 import { setupTodoRoutes } from "./routes/todoRoutes.js";
+import { initializeDatabase } from "./config/init.js";
 
 const app = express();
 const port = 3000;
@@ -22,14 +22,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// Database setup
-const db = new sqlite3.Database("./database/todos.db", (err) => {
-  if (err) {
-    console.error("Error opening database:", err);
-  } else {
-    console.log("Connected to the SQLite database.");
-  }
-});
+// Initialize database
+const db = initializeDatabase();
 
 // Initialize services and controllers
 const todoService = new TodoService(db);
