@@ -13,13 +13,13 @@ export function meta({}: Route.MetaArgs) {
 export default function TrackThree() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [error, setError] = useState<string>("");
-  const [newTodoTitle, setNewTodoTitle] = useState("");
   const [showAddDialog, setShowAddDialog] = useState(false);
 
   useEffect(() => {
     const initDb = async () => {
       try {
         await localDbService.initialize();
+        await syncWithBackend();
         loadTodos();
       } catch (err: any) {
         setError(err.message || "Failed to initialize local database");
