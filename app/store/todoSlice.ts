@@ -1,4 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import { localDbService } from '~/services/localDb';
 import type { Todo } from '~/types/todo';
 
 interface TodoState {
@@ -27,6 +28,7 @@ export const todoSlice = createSlice({
         todo.status = action.payload.status;
         todo.synced = false;
       }
+      localDbService.updateTodoStatus(action.payload.todoId, action.payload.status);
     }
   }
 });

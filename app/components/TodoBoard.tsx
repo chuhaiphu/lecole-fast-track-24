@@ -52,23 +52,30 @@ export function TodoBoard({ todos }: TodoBoardProps) {
   const handleDragOver = (event: DragOverEvent) => {
     const { active, over } = event;
     if (!over) return;
-    console.log(over.id);
+  
     const activeTodoId = Number(active.id);
-    const overTodoId = Number(over.id);
-
-    if (activeTodoId === overTodoId) return;
-
+    
+    // Determine the new status based on whether we're over a column or another todo
+    const newStatus = over.data.current?.todo?.status || over.id as Todo["status"];
+    
+    // Validate that newStatus is one of the allowed values
+    if (!['backlog', 'in_progress', 'done'].includes(newStatus)) return;
+  
     const updatedTodos = todos.slice();
     const activeTodoIndex = updatedTodos.findIndex((todo: Todo) => todo.id === activeTodoId);
-    const overTodoIndex = updatedTodos.findIndex((todo: Todo) => todo.id === overTodoId);
-    const newTodos = arrayMove(updatedTodos, activeTodoIndex, overTodoIndex);
-
-    dispatch(setTodos(newTodos));
-    const newStatus = over.id as Todo["status"];
+    
+    if (over.data.current?.todo) {
+      const overTodoId = Number(over.id);
+      if (activeTodoId === overTodoId) return;
+      const overTodoIndex = updatedTodos.findIndex((todo: Todo) => todo.id === overTodoId);
+      const newTodos = arrayMove(updatedTodos, activeTodoIndex, overTodoIndex);
+      dispatch(setTodos(newTodos));
+    }
+  
     dispatch(updateTodoStatus({ todoId: activeTodoId, status: newStatus }));
     localDbService.updateTodoStatus(activeTodoId, newStatus);
-
   };
+  
 
   return (
     <DndContext sensors={sensors} onDragEnd={handleDragEnd} onDragStart={handleDragStart} onDragOver={handleDragOver}>
