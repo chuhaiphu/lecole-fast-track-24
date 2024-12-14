@@ -1,18 +1,21 @@
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from 'react-redux';
 import type { Route } from "../track-three/+types";
 import { Button } from "~/components/ui/button";
 import { TodoBoard } from "~/components/TodoBoard";
 import { localDbService } from "~/services/localDb";
-import type { Todo } from "~/types/todo";
 import { AddTodoDialog } from "~/components/AddTodoDialog";
+import { setTodos, setError } from '~/store/todoSlice';
+import type { RootState } from '~/store/store';
 
 export function meta({}: Route.MetaArgs) {
   return [{ title: "Track Three" }];
 }
 
 export default function TrackThree() {
-  const [todos, setTodos] = useState<Todo[]>([]);
-  const [error, setError] = useState<string>("");
+  const dispatch = useDispatch();
+  const todos = useSelector((state: RootState) => state.todos.todos);
+  const error = useSelector((state: RootState) => state.todos.error);
   const [showAddDialog, setShowAddDialog] = useState(false);
 
   useEffect(() => {
@@ -22,7 +25,7 @@ export default function TrackThree() {
         await syncWithBackend();
         loadTodos();
       } catch (err: any) {
-        setError(err.message || "Failed to initialize local database");
+        dispatch(setError(err.message || "Failed to initialize local database"));
       }
     };
 
@@ -33,26 +36,15 @@ export default function TrackThree() {
     return () => {
       localDbService.close();
     };
-  }, []);
+  }, [dispatch]);
 
   const loadTodos = () => {
-    setTodos(localDbService.getTodos());
-  };
-
-  const updateTodoStatus = (todoId: number, newStatus: Todo["status"]) => {
-    try {
-      localDbService.updateTodoStatus(todoId, newStatus);
-      loadTodos();
-    } catch (err: any) {
-      setError("Failed to update todo status");
-    }
+    dispatch(setTodos(localDbService.getTodos()));
   };
 
   const syncWithBackend = async () => {
     try {
       const unsyncedTodos = localDbService.getUnsyncedTodos();
-      console.log("Unsynced todos:", unsyncedTodos);
-      
       const response = await fetch("http://localhost:3000/api/todos/sync", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -61,14 +53,14 @@ export default function TrackThree() {
 
       if (!response.ok) throw new Error("Sync failed");
       const serverTodos = await response.json();
-      console.log("Server response:", serverTodos);
       
       localDbService.syncTodos(serverTodos);
       loadTodos();
     } catch (err: any) {
-      setError("Failed to sync with backend: " + err.message);
+      dispatch(setError("Failed to sync with backend: " + err.message));
     }
   };
+
   useEffect(() => {
     const interval = setInterval(syncWithBackend, 15000);
     return () => clearInterval(interval);
@@ -90,12 +82,13 @@ export default function TrackThree() {
           onAdd={(title) => {
             localDbService.addTodo(title);
             loadTodos();
+            setShowAddDialog(false);
           }}
           onClose={() => setShowAddDialog(false)}
         />
       )}
 
-      <TodoBoard todos={todos} onStatusChange={updateTodoStatus} />
+      <TodoBoard todos={todos} />
     </div>
   );
 }

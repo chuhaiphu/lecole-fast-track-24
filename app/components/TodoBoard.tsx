@@ -1,15 +1,18 @@
 import { DndContext, type DragEndEvent, DragOverlay, useSensors, useSensor, PointerSensor } from '@dnd-kit/core';
+import { useDispatch, useSelector } from 'react-redux';
 import { TodoColumn } from "~/components/TodoColumn";
 import { TodoItem } from "~/components/TodoItem";
 import type { Todo } from "~/types/todo";
 import { useState } from 'react';
+import { updateTodoStatus } from '~/store/todoSlice';
+import { localDbService } from '~/services/localDb';
 
 interface TodoBoardProps {
   todos: Todo[];
-  onStatusChange: (todoId: number, status: Todo["status"]) => void;
 }
 
-export function TodoBoard({ todos, onStatusChange }: TodoBoardProps) {
+export function TodoBoard({ todos }: TodoBoardProps) {
+  const dispatch = useDispatch();
   const [activeId, setActiveId] = useState<number | null>(null);
   const sensors = useSensors(useSensor(PointerSensor));
 
@@ -25,7 +28,8 @@ export function TodoBoard({ todos, onStatusChange }: TodoBoardProps) {
     const newStatus = over.id as Todo["status"];
     
     if (newStatus !== active.data.current?.status) {
-      onStatusChange(todoId, newStatus);
+      localDbService.updateTodoStatus(todoId, newStatus);
+      dispatch(updateTodoStatus({ todoId, status: newStatus }));
     }
     setActiveId(null);
   };
