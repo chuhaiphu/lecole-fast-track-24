@@ -4,6 +4,7 @@ import { Button } from "~/components/ui/button";
 import { TodoBoard } from "~/components/TodoBoard";
 import { localDbService } from "~/services/localDb";
 import type { Todo } from "~/types/todo";
+import { AddTodoDialog } from "~/components/AddTodoDialog";
 
 export function meta({}: Route.MetaArgs) {
   return [{ title: "Track Three" }];
@@ -13,6 +14,7 @@ export default function TrackThree() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [error, setError] = useState<string>("");
   const [newTodoTitle, setNewTodoTitle] = useState("");
+  const [showAddDialog, setShowAddDialog] = useState(false);
 
   useEffect(() => {
     const initDb = async () => {
@@ -90,16 +92,17 @@ export default function TrackThree() {
 
       {error && <div className="text-red-500 mb-4">Error: {error}</div>}
 
-      <div className="flex gap-2 mb-4">
-        <input
-          type="text"
-          value={newTodoTitle}
-          onChange={(e) => setNewTodoTitle(e.target.value)}
-          className="flex-1 px-3 py-2 border rounded"
-          placeholder="Add new todo..."
+      <Button onClick={() => setShowAddDialog(true)}>Add New Todo</Button>
+
+      {showAddDialog && (
+        <AddTodoDialog
+          onAdd={(title) => {
+            localDbService.addTodo(title);
+            loadTodos();
+          }}
+          onClose={() => setShowAddDialog(false)}
         />
-        <Button onClick={addTodo}>Add Todo</Button>
-      </div>
+      )}
 
       <TodoBoard todos={todos} onStatusChange={updateTodoStatus} />
     </div>

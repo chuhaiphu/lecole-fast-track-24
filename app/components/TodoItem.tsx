@@ -1,23 +1,29 @@
-import { Button } from "~/components/ui/button";
+import { useDraggable } from '@dnd-kit/core';
 import type { Todo } from "~/types/todo";
 
 interface TodoItemProps {
   todo: Todo;
-  onStatusChange: (id: number, status: Todo["status"]) => void;
-  availableActions: Array<Todo["status"]>;
 }
 
-export function TodoItem({ todo, onStatusChange, availableActions }: TodoItemProps) {
+export function TodoItem({ todo }: TodoItemProps) {
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+    id: todo.id,
+    data: todo
+  });
+
+  const style = transform ? {
+    transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+  } : undefined;
+
   return (
-    <div className={`p-3 rounded-lg border ${todo.synced ? "bg-green-100" : "bg-yellow-100"}`}>
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...listeners}
+      {...attributes}
+      className={`p-3 rounded-lg border cursor-move ${todo.synced ? "bg-green-100" : "bg-yellow-100"}`}
+    >
       <p>{todo.title}</p>
-      <div className="flex gap-2 mt-2">
-        {availableActions.map((status) => (
-          <Button key={status} size="sm" onClick={() => onStatusChange(todo.id, status)}>
-            Move to {status.replace("_", " ")}
-          </Button>
-        ))}
-      </div>
     </div>
   );
 }
