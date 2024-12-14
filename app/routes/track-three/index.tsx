@@ -53,8 +53,10 @@ export default function TrackThree() {
 
       if (!response.ok) throw new Error("Sync failed");
       const serverTodos = await response.json();
-      
-      localDbService.syncTodos(serverTodos);
+
+      const sortedServerTodos = [...serverTodos].sort((a, b) => a.order_index - b.order_index);
+
+      localDbService.syncTodos(sortedServerTodos);
       loadTodos();
     } catch (err: any) {
       dispatch(setError("Failed to sync with backend: " + err.message));

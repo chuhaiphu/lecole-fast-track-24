@@ -1,18 +1,35 @@
-import { useDraggable } from '@dnd-kit/core';
+import { useSortable } from "@dnd-kit/sortable";
 import type { Todo } from "~/types/todo";
+import { CSS } from "@dnd-kit/utilities";
 
 interface TodoItemProps {
   todo: Todo;
 }
+
 export function TodoItem({ todo }: TodoItemProps) {
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: todo.id,
-    data: todo
+    data: {todo}
   });
 
-  const style = transform ? {
-    transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-  } : undefined;
+  const style = {
+    transition,
+    transform: CSS.Transform.toString(transform),
+  }
+
+  if (isDragging) {
+    return (
+      <div
+        ref={setNodeRef}
+        style={style}
+        {...listeners}
+        {...attributes}
+        className="p-3 rounded-lg border cursor-move bg-gray-200 flex justify-between items-center"
+      >
+        <p>{todo.title}</p>
+      </div>
+    );
+  }
 
   return (
     <div
